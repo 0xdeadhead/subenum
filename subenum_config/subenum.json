@@ -1,0 +1,21 @@
+[
+    {
+        "config_file": "subfinder.json",
+        "base_cmd": "subfinder -silent -d {domain}",
+        "conf_cmd": "subfinder -silent -config {config_file_path} -d {domain}"
+    },
+    {
+        "config_file": "findomain.ini",
+        "base_cmd": "findomain -q -t {domain} ",
+        "conf_cmd": "findomain -q -c {config_file_path} -t {domain}"
+    },
+    {
+        "config_file": "",
+        "base_cmd": "assetfinder -subs-only {domain}"
+    },
+    {
+        "config_file": "subtrails.json",
+        "conf_cmd": "subtrails -t 20 -c {config_file_path} -d {domain}",
+        "base_cmd": "subtrails -t 20 -d {domain}"
+    }
+]
