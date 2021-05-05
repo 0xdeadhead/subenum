@@ -6,5 +6,4 @@ pyvenv.cfg
 subenum/__pycache__/**
 subenum_output/**
 subenum_config/resolvers.txt
-subenum_config/wordlists/*
 
