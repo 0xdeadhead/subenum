@@ -69,9 +69,8 @@ def main():
 
     # Check if Refresh flag is set and resolvers.txt file exists and make a resolvers.txt file
     if args.refresh or not os.path.exists(f"{CONFIG_DIR}/resolvers.txt"):
-        cprint("[*] Updating resolvers list", color="cyan", file=sys.stderr)
         asyncio.run(run_cmd(
-            f"dnsvalidator --silent -tL https://public-dns.info/nameservers.txt -threads 100 -o {CONFIG_DIR}resolvers.txt"))
+            f"dnsvalidator --silent -tL https://public-dns.info/nameservers.txt -threads 100 -o {CONFIG_DIR}/resolvers.txt"))
 
     # Passive subdomain enumeration tasks
     tasks = passive_enum(CONFIG_DIR, DOMAIN)
