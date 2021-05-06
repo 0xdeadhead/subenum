@@ -10,10 +10,13 @@ sudo ln -s /usr/bin/g++ /usr/bin/c++
 ##Install python
 function install_python {
     wget https://www.python.org/ftp/python/3.9.5/Python-3.9.5.tar.xz
-    tar -xf Python-3.9.5.tgz
-    cd Python-3.9.5 && ./configure && sudo make && sudo make altinstall && curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
-    python3 get-pip.py
+    tar -xf Python-3.9.5.tar.xz
+    cd Python-3.9.5 && ./configure && sudo make && sudo make altinstall
     cd ..
+}
+function install_pip {
+    curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+    python3 get-pip.py
 }
 
 function install_massdns {
@@ -54,7 +57,7 @@ function install_goutils {
 function install_golang {
     wget https://dl.google.com/go/go1.15.2.linux-amd64.tar.gz
     sudo tar -C /usr/local -xzf go1.15.2.linux-amd64.tar.gz
-    echo "export PATH=\"${PATH}:/usr/local/go/bin\"" >>$HOME/.profile
+    echo "export PATH=\"${PATH}:/usr/local/go/bin:${HOME}/go/bin\"" >>$HOME/.profile
     echo "export GOPATH=\"${HOME}/go\"" >>$HOME/.profile
     source $HOME/.profile
 }
@@ -86,8 +89,9 @@ type massdns || install_massdns
 type findomain || install_findomain
 type go || install_golang
 install_goutils
-install_python
+dpkg --compare-versions "$(python3 --version | cut -d ' ' -f 2) " "lt" "3.7.0" && install_python
+type pip3 || install_pip
 install_pythonutils
-install_massdns
-install_urldedupe
+type massdns || install_massdns
+type urldedupe || install_urldedupe
 configure_subenum
