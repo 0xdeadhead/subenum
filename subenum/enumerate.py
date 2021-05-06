@@ -40,10 +40,10 @@ def generate_wordlist(subdomain_file_path, root_domain):
 def main():
     parser = ArgumentParser()
     parser.add_argument(
-        "-c", "--config_dir", help="Directory Containing configuration", default="subenum_config")
+        "-c", "--config_dir", help="Directory Containing configuration", default=f"{os.environ['HOME']}/subenum_config")
     parser.add_argument("-d", "--domain", help="Domain name", required=True)
     parser.add_argument(
-        "-o", "--output_dir", help="Directory for writing output", default="subenum_output")
+        "-o", "--output_dir", help="Directory for writing output", default=f"{os.environ['HOME']}/subenum_output")
     parser.add_argument("-r", "--refresh", help="Refresh resolvers list",
                         default=False, action="store_true")
     parser.add_argument("-R", "--resolve_count",
@@ -70,7 +70,7 @@ def main():
     # Check if Refresh flag is set and resolvers.txt file exists and make a resolvers.txt file
     if args.refresh or not os.path.exists(f"{CONFIG_DIR}/resolvers.txt"):
         asyncio.run(run_cmd(
-            f"dnsvalidator --silent -tL https://public-dns.info/nameservers.txt -threads 100 -o {CONFIG_DIR}/resolvers.txt"))
+            f"dnsvalidator --silent -tL https://public-dns.info/nameservers.txt -threads 200 > {CONFIG_DIR}/resolvers.txt"))
 
     # Passive subdomain enumeration tasks
     tasks = passive_enum(CONFIG_DIR, DOMAIN)
@@ -97,7 +97,8 @@ def main():
     with open(unresolved_domains_file, "w") as unresolved_domains_file_handle:
         unresolved_domains_file_handle.write(unique_domains)
 
-    cprint(f"[*] Started bruteforcing {len()}",
+    total_subs = unique_domains.split("\n")
+    cprint(f"[*] Started resolving {len(total_subs)} subdomains",
            color="yellow", file=sys.stderr)
 
     RESOLVE_FROM_STDIN = f" | shuffledns -t 25000 -r {CONFIG_DIR}/resolvers.txt -d {DOMAIN}"*RES_COUNT

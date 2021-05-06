@@ -17,5 +17,9 @@
         "config_file": "subtrails.json",
         "conf_cmd": "subtrails -t 20 -c {config_file_path} -d {domain}",
         "base_cmd": "subtrails -t 20 -d {domain}"
+    },
+    {
+        "base_cmd": "crobat -s {domain}",
+        "config_file": ""
     }
 ]
