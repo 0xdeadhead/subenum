@@ -101,16 +101,24 @@ def main():
     cprint(f"[*] Started resolving {len(total_subs)} subdomains",
            color="yellow", file=sys.stderr)
 
-    RESOLVE_FROM_STDIN = f" | shuffledns -t 25000 -r {CONFIG_DIR}/resolvers.txt -d {DOMAIN}"*RES_COUNT
+    RESOLVE_FROM_STDIN = f" | shuffledns -t 25000 -r {CONFIG_DIR}/resolvers.txt "*RES_COUNT
 
     asyncio.run(run_cmd(
-        f"shuffledns -t 25000  -d {DOMAIN} -list {unresolved_domains_file} -r {CONFIG_DIR}/resolvers.txt {RESOLVE_FROM_STDIN} -o {OUTPUT_DIR}/{DOMAIN}/resolved.txt"))
+        f"shuffledns -t 25000  -list {unresolved_domains_file} -r {CONFIG_DIR}/resolvers.txt {RESOLVE_FROM_STDIN} -d {DOMAIN} -o {OUTPUT_DIR}/{DOMAIN}/resolved.txt"))
 
     cprint(
         f"[*] resolved domains written to {OUTPUT_DIR}/{DOMAIN}/resolved.txt\nStarted generating Possibilities", color="yellow", file=sys.stderr)
 
+    # set fast flag according to subdomain count
+    fast_flag = ""
+    with open(f"{OUTPUT_DIR}/{DOMAIN}/resolved.txt") as resolved_sub_file:
+        if len(resolved_sub_file.readlines()) >= 1000:
+            fast_flag = "-f"
+            cprint("[*] This may take time due to large subdomains list",
+                   color="cyan", file=sys.stderr)
+
     asyncio.run(run_cmd(
-        f"dnsgen {OUTPUT_DIR}/{DOMAIN}/resolved.txt {RESOLVE_FROM_STDIN} -o  {OUTPUT_DIR}/{DOMAIN}/resolved_possibilities.txt"))
+        f"dnsgen {fast_flag} {OUTPUT_DIR}/{DOMAIN}/resolved.txt {RESOLVE_FROM_STDIN} -d {DOMAIN} -o  {OUTPUT_DIR}/{DOMAIN}/resolved_possibilities.txt"))
 
     cprint(
         f"[*] resolved domains written to {OUTPUT_DIR}/{DOMAIN}/resolved_possibilities.txt", color="yellow", file=sys.stderr)

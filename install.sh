@@ -1,7 +1,8 @@
 #! /bin/bash
 
 ##Install dependencies
-sudo apt update -y && sudo apt install -y build-essential make git software-properties-common wget gcc zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libsqlite3-dev libreadline-dev libffi-dev curl libbz2-dev gcc-10 g++-10
+sudo apt update -y && sudo apt install -y build-essential make git software-properties-common wget gcc zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libsqlite3-dev libreadline-dev libffi-dev curl libbz2-dev
+sudo add-apt-repository ppa:ubuntu-toolchain-r/test && sudo apt update && sudo apt install gcc-10 g++-10
 ## set default g++ to g++-10
 sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 100 --slave /usr/bin/g++ g++ /usr/bin/g++-10 --slave /usr/bin/gcov gcov /usr/bin/gcov-10
 ## soft link c++ from g++
@@ -9,14 +10,16 @@ sudo ln -s /usr/bin/g++ /usr/bin/c++
 
 ##Install python
 function install_python {
-    wget https://www.python.org/ftp/python/3.9.5/Python-3.9.5.tar.xz
-    tar -xf Python-3.9.5.tar.xz
-    cd Python-3.9.5 && ./configure && sudo make && sudo make altinstall
-    cd ..
-}
-function install_pip {
+    sudo add-apt-repository ppa:deadsnakes/ppa && sudo apt update
+    sudo apt install python3.8
+    sudo update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.8 100
     curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
-    python3 get-pip.py
+    sudo python3 get-pip.py
+
+}
+
+function install_cmake {
+    sudo apt install ./bin/cmake_3.20.2-1_amd64.deb
 }
 
 function install_massdns {
@@ -85,13 +88,21 @@ function install_pythonutils {
     cd ..
 
 }
+
+function checkInstallations {
+    clear
+    echo -e "These tools are not found in path\n Install Manually"
+    type python3.8 cmake g++ c++ urldedupe massdns findomain assetfinder subfinder crobat shuffledns go subenum dnsvalidator subtrails dnsgen pip3 2>&1 | grep "^-bash" | cut -d ":" -f 3
+}
+
+install_cmake
 type massdns || install_massdns
 type findomain || install_findomain
 type go || install_golang
 install_goutils
-dpkg --compare-versions "$(python3 --version | cut -d ' ' -f 2) " "lt" "3.7.0" && install_python
-type pip3 || install_pip
+type python3 && dpkg --compare-versions "$(python3 --version | cut -f 2 -d ' ')" "lt" "3.7.0" && install_python
 install_pythonutils
 type massdns || install_massdns
 type urldedupe || install_urldedupe
 configure_subenum
+checkInstallations
