@@ -1,6 +1,6 @@
 [
     {
-        "config_file": "subfinder.json",
+        "config_file": "subfinder.yaml",
         "base_cmd": "subfinder -silent -d {domain}",
         "conf_cmd": "subfinder -silent -config {config_file_path} -d {domain}"
     },
