@@ -47,7 +47,7 @@ def main():
     parser.add_argument("-r", "--refresh", help="Refresh resolvers list",
                         default=False, action="store_true")
     parser.add_argument("-R", "--resolve_count",
-                        help="No of times to resolve", default=3)
+                        help="No of times to resolve", default=3,type=int)
     args = parser.parse_args()
 
     DOMAIN = args.domain
